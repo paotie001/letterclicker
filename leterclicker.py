@@ -105,4 +105,3 @@ if point>=50:
     perk1_button.pack(side='right')
 # --- Mainloop ---
 game.mainloop()
-print()
