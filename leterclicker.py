@@ -77,4 +77,4 @@ upgrade1_button.pack(side='right')
 
 # --- Mainloop ---
 game.mainloop()
-print()
+
