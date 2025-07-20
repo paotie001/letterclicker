@@ -1,58 +1,71 @@
 import tkinter as tk
 from tkinter import simpledialog
-point=0
-adder=1
-up1cost=10
 
-#function:
+point = 0
+clickPower = 1
+
+# --- Upgrade Class ---
+class Upgrade:
+    def __init__(self, level, cost):
+        self.level = level
+        self.cost = cost
+
+    def update(self):
+        self.level += 1
+        self.cost = int(self.cost * 1.15) + 1
+
+# --- Object ---
+upgrade1_obj = Upgrade(0, 10)
+
+# --- Functions ---
 def click():
     global point
-    point+=adder
-    pointLabelPoint.config(text=str(point)+' coin')
-def up1():
-    global point,adder,up1cost
-    if point>up1cost:
-        adder+=1
-        point-=up1cost
-        pointLabelPoint.config(text=str(point) + ' coin')
-        pointLabelPower.config(text=str(adder) + ' click power')
+    point += clickPower
+    pointLabelPoint.config(text=str(point) + ' coin')
 
-#window create:
-game=tk.Tk()
-game.title("clicker")
+def up1():
+    global point, clickPower
+    if point >= upgrade1_obj.cost:
+        point -= upgrade1_obj.cost
+        clickPower += 1
+        upgrade1_obj.update()
+        pointLabelPoint.config(text=str(point) + ' coin')
+        pointLabelPower.config(text=str(clickPower) + ' click power')
+        upgrade1_button.config(
+            text=f"({upgrade1_obj.level}) +1 click power {upgrade1_obj.cost} coin"
+        )
+
+# --- Window ---
+game = tk.Tk()
+game.title("Clicker")
 game.geometry("800x450")
 
-#random:
 player_name = simpledialog.askstring("Player Name", "Enter your name:", parent=game)
 if not player_name:
     player_name = "Player"
 
-#frame:
-Frame=tk.Frame(game)
+# --- Widgets ---
+pointLabelPoint = tk.Label(game, text=str(point) + ' coin', font=('Ariel', 30))
+pointLabelPower = tk.Label(game, text=str(clickPower) + ' click power')
 
-#button
-click_me=tk.Button(
-    game,
-    text=str(player_name),
-    font=('Ariel',50),
-    command=click
+click_me = tk.Button(
+    game, text=f"Click, {player_name}!", font=('Ariel', 50), command=click
 )
-upgrade1=tk.Button(
+
+upgrade1_button = tk.Button(
     game,
-    text=f"+1 click power {up1cost} coin",
-    font=('Ariel' ,20),
+    text=f"({upgrade1_obj.level}) +1 click power {upgrade1_obj.cost} coin",
+    font=('Ariel', 20),
     command=up1,
     height=1,
-    width=20
+    width=30
 )
 
-#label:
-pointLabelPoint=tk.Label(game,text=str(point)+' coin',font=('Ariel',30))
-pointLabelPower=tk.Label(game,text=str(adder)+' click power')
-
-#display:
+# --- Layout ---
 pointLabelPoint.pack()
 pointLabelPower.pack()
 click_me.pack()
-upgrade1.pack(side='right')
+upgrade1_button.pack(side='right')
+
+# --- Mainloop ---
 game.mainloop()
