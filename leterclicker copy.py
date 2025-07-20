@@ -45,11 +45,19 @@ if not player_name:
     player_name = "Player"
 
 # --- Widgets ---
-pointLabelPoint = tk.Label(game, text=str(point) + ' coin', font=('Ariel', 30))
-pointLabelPower = tk.Label(game, text=str(clickPower) + ' click power')
+pointLabelPoint = tk.Label(
+    game,
+    text=str(point) + ' coin',
+    font=('Ariel', 30))
+pointLabelPower = tk.Label(
+    game,
+    text=str(clickPower) + ' click power')
 
 click_me = tk.Button(
-    game, text=f"Click, {player_name}!", font=('Ariel', 50), command=click
+    game,
+    text=str(player_name),
+    font=('Ariel', 50),
+    command=click
 )
 
 upgrade1_button = tk.Button(
