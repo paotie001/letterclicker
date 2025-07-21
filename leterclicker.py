@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import simpledialog
 
-point =11000
+point =0
 CP = 1
 multi=1
 # --- Classes ---
@@ -49,11 +49,11 @@ class Upgrade:
             pointLabelPower.config(text=str(CP*multi) + ' click power')
             if self.button:
                 self.button.config(
-                    text=f"({self.level}) +1 CP \n{self.cost} coin"
+                    text=f"({self.level}) +{self.power} CP \n{self.cost} coin"
                 )
     def checkconu(self):#check condition
         if point >= self.cost/2 and not self.button.winfo_ismapped():
-            self.button.grid(row=self.tier,column=1)
+            self.button.grid(row=self.tier, column=1)
         elif point < self.cost/2 and self.button.winfo_ismapped():
             self.button.grid_forget()
 # --- Objects ---
@@ -75,6 +75,7 @@ def click():
     perk1.checkconp()
     upgrade2.checkconu()
     perk2.checkconp()
+    print("Current point:", point)
 def toggle_menu():
     if upframe.winfo_ismapped():
         upframe.place_forget()
@@ -111,7 +112,7 @@ click_me = tk.Button(
     text=str(player_name),
     fg=('black'),
     bg=('white'),
-    font=('Ariel', 50,' '.join(player['font'])),
+    font=('Ariel', 100,' '.join(player['font'])),
     command=click
 )
 toggle_button = tk.Button(
