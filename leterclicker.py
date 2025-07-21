@@ -1,20 +1,22 @@
 import tkinter as tk
 from tkinter import simpledialog
 
-point = 0
+point =0
 CP = 1
 
 # --- Classes ---
 class Perk:
-    def __init__(self,type,cost):
+    def __init__(self,type,cost,power,tier):
         self.type=type
         self.cost=cost
+        self.power=power
+        self.tier=tier
         self.button=None
     def command(self):
         global point, CP
         if point >= self.cost:
             point -= self.cost
-            CP *= 1.5
+            CP *= self.power
             click_me.config(font=('Ariel', 50, self.type))
             pointLabelPoint.config(text=str(point) + ' coin')
             pointLabelPower.config(text=str(CP) + ' click power')
@@ -22,13 +24,15 @@ class Perk:
 
     def checkconp(self):#check condition
         if point >= self.cost/2 and not self.button.winfo_ismapped():
-            self.button.pack(side='left')
+            self.button.grid(row=self.tier,column=2)
         elif point < self.cost/2 and self.button.winfo_ismapped():
-            self.button.pack_forget()
+            self.button.grid_forget()
 class Upgrade:
-    def __init__(self, level, cost):
+    def __init__(self, level, cost,power,tier):
         self.level = level
         self.cost = cost
+        self.power=power
+        self.tier=tier
         self.button=None
     def update(self):
         self.level += 1
@@ -38,30 +42,37 @@ class Upgrade:
         global point, CP
         if point >= self.cost:
             point -= self.cost
-            CP += 1
+            CP += self.power
             self.update()
             pointLabelPoint.config(text=str(point) + ' coin')
-            pointLabelPower.config(text=str(CP) + 'CP')
+            pointLabelPower.config(text=str(CP) + 'click power')
             if self.button:
                 self.button.config(
                     text=f"({self.level}) +1 CP {self.cost} coin"
                 )
     def checkconu(self):#check condition
         if point >= self.cost/2 and not self.button.winfo_ismapped():
-            self.button.pack(side='right')
+            self.button.grid(row=self.tier,column=1)
         elif point < self.cost/2 and self.button.winfo_ismapped():
-            self.button.pack_forget()
+            self.button.grid_forget()
 # --- Objects ---
-upgrade1 = Upgrade(0, 10)
-perk1=Perk('bold',100)
-
+upgrade1 = Upgrade(0, 10,1,0)
+upgrade2= Upgrade(0, 200,5,1)
+perk1=Perk('bold',100,1.5,0)
 # --- Functions ---
 def click():
     global point
     point += CP
     pointLabelPoint.config(text=str(point) + ' coin')
     perk1.checkconp()
-
+    upgrade2.checkconu()
+def toggle_menu():
+    if upframe.winfo_ismapped():
+        upframe.place_forget()
+        toggle_button.config(text="Show Menu")
+    else:
+        upframe.place(anchor='s',relx=0.5,rely=1)
+        toggle_button.config(text="Hide Menu")
 # --- Windows ---
 game = tk.Tk()
 game.title("Clicker")
@@ -70,7 +81,13 @@ game.geometry("450x800")
 player_name = simpledialog.askstring("Player Name", "Enter your name:", parent=game)
 if not player_name:
     player_name = "Player"
-
+## --- Frames ---
+upframe=tk.LabelFrame(
+    game,
+    text="upgrades and perks",
+    width=200,
+    height=100
+)
 # --- Widgets ---
 pointLabelPoint = tk.Label(
     game,
@@ -88,17 +105,30 @@ click_me = tk.Button(
     font=('Ariel', 50),
     command=click
 )
-
-upgrade1.button = tk.Button(
+toggle_button = tk.Button(
     game,
+    text="Hide Menu",
+    command=toggle_menu)
+
+#upgrade button:
+upgrade1.button = tk.Button(
+    upframe,
     text=f"({upgrade1.level}) +1 CP \n{upgrade1.cost} coin",
     font=('Ariel', 20),
     command= upgrade1.command,
     height=2,
     width=10
 )
+upgrade2.button = tk.Button(
+    upframe,
+    text=f"({upgrade2.level}) +5 CP \n{upgrade2.cost} coin",
+    font=('Ariel', 20),
+    command= upgrade2.command,
+    height=2,
+    width=10
+)
 perk1.button = tk.Button(
-    game,
+    upframe,
     text=f"BOLD x1.5 CP \n{perk1.cost} coin",
     font=('Ariel', 20),
     command=perk1.command,
@@ -106,12 +136,18 @@ perk1.button = tk.Button(
     width=10
 )
 # --- Layout ---
-pointLabelPoint.pack()
-pointLabelPower.pack()
-click_me.pack()
-upgrade1.button.pack(side='left')
+#"450x800"
+pointLabelPoint.place(anchor='n',relx=0.5,rely=0)
+pointLabelPower.place(anchor='n',relx=0.5,rely=0.05)
+click_me.place(anchor='n',relx=0.5,rely=0.4)
+toggle_button.place(anchor='s',relx=0.15,rely=0.8)
+upframe.place(anchor='s',relx=0.5,rely=1)
+upframe.pack_propagate(False)
+upgrade1.button.grid(row=0,column=1)
 if point!=0: #every other upgrades and perk goes here
-    perk1.button.pack(side='right')
+     perk1.button.grid(row=0,column=2)
+     upgrade2.button.grid(row=1,column=1)
+
 # --- Mainloop ---
 game.mainloop()
 
