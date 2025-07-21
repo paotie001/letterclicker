@@ -3,7 +3,7 @@ from tkinter import simpledialog
 
 point =0
 CP = 1
-
+multi=1
 # --- Classes ---
 class Perk:
     def __init__(self,type,cost,power,tier):
@@ -13,13 +13,13 @@ class Perk:
         self.tier=tier
         self.button=None
     def command(self):
-        global point, CP
+        global point, CP,multi
         if point >= self.cost:
             point -= self.cost
-            CP *= self.power
+            multi *= self.power
             click_me.config(font=('Ariel', 50, self.type))
             pointLabelPoint.config(text=str(point) + ' coin')
-            pointLabelPower.config(text=str(CP) + ' click power')
+            pointLabelPower.config(text=str(CP*multi) + ' click power')
             self.button.destroy()
 
     def checkconp(self):#check condition
@@ -39,13 +39,13 @@ class Upgrade:
         self.cost = int(self.cost * 1.15) + 1
 
     def command(self):
-        global point, CP
+        global point, CP,multi
         if point >= self.cost:
             point -= self.cost
             CP += self.power
             self.update()
             pointLabelPoint.config(text=str(point) + ' coin')
-            pointLabelPower.config(text=str(CP) + 'click power')
+            pointLabelPower.config(text=str(CP*multi) + ' click power')
             if self.button:
                 self.button.config(
                     text=f"({self.level}) +1 CP {self.cost} coin"
@@ -62,7 +62,7 @@ perk1=Perk('bold',100,1.5,0)
 # --- Functions ---
 def click():
     global point
-    point += CP
+    point += (CP*multi)
     pointLabelPoint.config(text=str(point) + ' coin')
     perk1.checkconp()
     upgrade2.checkconu()
@@ -95,7 +95,7 @@ pointLabelPoint = tk.Label(
     font=('Ariel', 30))
 pointLabelPower = tk.Label(
     game,
-    text=str(CP) + ' click power')
+    text=str(CP*multi) + ' click power')
 
 click_me = tk.Button(
     game,
