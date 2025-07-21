@@ -114,3 +114,4 @@ if point!=0: #every other upgrades and perk goes here
     perk1.button.pack(side='right')
 # --- Mainloop ---
 game.mainloop()
+print()
